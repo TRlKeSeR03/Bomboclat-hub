@@ -5,170 +5,201 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bomboclat (sweet) | Official Hub</title>
     
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- --- FAVICON SETTINGS --- -->
+    <link rel="icon" type="image/png" href="image_0.png">
+    <link rel="apple-touch-icon" href="image_0.png">
+    <!-- ------------------------ -->
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #38a169; /* Turkuaz/Yeşil Neon Işık - Grup Logosu Rengi */
+            --primary: #38a169; /* Bomboclat Green/Teal */
             --bg: #050505;
-            --card-bg: #111111;
+            --card-bg: rgba(17, 17, 17, 0.8);
             --text: #ffffff;
             --secondary: #64748b;
-            --purple-accent: #8b5cf6; /* Mor Vurgu - Geliştirici Rengi */
+            --purple-accent: #723eeb;
         }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 50px; display: flex; justify-content: center; min-height: 100vh; overflow-x: hidden; }
+        .wrapper { width: 100%; max-width: 480px; padding: 20px; }
 
-        .wrapper {
-            width: 100%;
-            max-width: 480px;
-            padding: 20px;
-        }
+        /* --- PROFILE --- */
+        .profile { text-align: center; margin-bottom: 30px; margin-top: 10px; }
+        .avatar-img { width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 15px; display: block; object-fit: cover; box-shadow: 0 0 25px rgba(56, 161, 105, 0.5); border: 2px solid var(--primary); }
+        h1 { font-weight: 800; font-size: 24px; margin: 0; }
+        .badge { color: var(--primary); font-size: 13px; font-weight: 600; margin-top: 5px; display: block; opacity: 0.9; }
 
-        /* Profile Header */
-        .profile {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        /* --- CARDS --- */
+        .section-title { font-size: 11px; text-transform: uppercase; color: var(--secondary); letter-spacing: 1.5px; margin: 25px 0 10px 5px; font-weight: 800; }
+        .link-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); padding: 16px; border-radius: 18px; text-decoration: none; color: white; display: flex; align-items: center; margin-bottom: 12px; transition: 0.3s; }
+        .link-card:hover { transform: translateY(-3px); border-color: var(--primary); background: rgba(255,255,255,0.02); }
+        .icon-box { font-size: 20px; margin-right: 15px; display: flex; align-items: center; justify-content: center; width: 25px; }
+        .link-text b { display: block; font-size: 15px; }
+        .link-text span { font-size: 12px; color: var(--secondary); }
 
-        /* *CHANGE HERE* - Group Logo Img (from image_0.png) */
-        .avatar-img {
-            width: 96px;
-            height: 96px;
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            display: block;
-            object-fit: cover;
-            box-shadow: 0 0 25px rgba(56, 161, 105, 0.7); /* Turkuaz Neon Işık */
-        }
-
-        h1 { font-weight: 800; font-size: 24px; margin: 0; letter-spacing: -0.5px; }
-        .badge { color: var(--primary); font-size: 14px; font-weight: 600; margin-top: 5px; display: block; }
-
-        /* Links Section */
-        .section-title { font-size: 12px; text-transform: uppercase; color: var(--secondary); letter-spacing: 1px; margin: 25px 0 10px 5px; font-weight: 800; }
-
-        .link-card {
-            background: var(--card-bg);
-            border: 1px solid #222;
-            padding: 16px;
-            border-radius: 16px;
-            text-decoration: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .link-card:hover {
-            transform: scale(1.02);
-            border-color: var(--primary);
-            background: #1a1a1a;
-        }
-
-        /* *CHANGE HERE* - Custom Icons */
-        .icon-box { font-size: 20px; margin-right: 15px; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
+        /* --- SPECIAL STYLES --- */
+        .download-card { border-left: 4px solid var(--primary); }
+        .special-card { border-left: 4px solid #fbbc05; }
+        .admin-icon { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--purple-accent); }
         
-        /* Developer Icon Img (from image_1.png) */
-        .developer-icon-img {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--purple-accent);
-        }
+        /* Disabled Link Style */
+        .link-disabled { opacity: 0.6; cursor: not-allowed !important; pointer-events: none; }
 
-        .link-text b { display: block; font-size: 16px; }
-        .link-text span { font-size: 13px; color: var(--secondary); }
+        /* --- ADMIN PANEL --- */
+        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; padding: 25px; border-radius: 25px; border: 2px solid var(--primary); z-index: 2000; width: 85%; max-width: 350px; box-shadow: 0 0 50px rgba(0,0,0,0.9); }
+        .admin-input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
+        .admin-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; margin-top: 5px; }
+        #admin-trigger { text-align: center; margin-top: 40px; opacity: 0.1; font-size: 10px; cursor: pointer; transition: 0.3s; }
 
-        /* Geliştirici Bağlantısı İçin Özel Stil */
-        .developer { border-left: 4px solid var(--purple-accent); }
-        .developer:hover { border-color: var(--purple-accent); }
-        
-        /* İndirme Butonları İçin Özel Stil */
-        .download { border-left: 4px solid #10b981; }
-
-        footer { text-align: center; margin-top: 50px; font-size: 12px; color: var(--secondary); line-height: 1.6; }
-        .status { color: #10b981; font-weight: bold; }
+        footer { text-align: center; margin-top: 30px; font-size: 11px; color: var(--secondary); opacity: 0.6; }
     </style>
 </head>
 <body>
 
     <div class="wrapper">
         
-<div class="profile">
-            <img src="image_0.png" alt="Bomboclat Logo" class="avatar-img">
-            <h1>BOMBOCLAT (sweet)</h1>
+        <!-- PROFILE HEADER -->
+        <div class="profile">
+            <img src="image_0.png" alt="Logo" class="avatar-img">
+            <h1>Bomboclat (sweet)</h1>
             <span class="badge">Redmi Note 10 Pro Community</span>
         </div>
 
-        
-<div class="section-title">Community</div>
-        
+        <!-- SECTION 1: TOP CHANNELS -->
+        <div class="section-title">Community</div>
         <a href="https://t.me/bomboclatsweet" class="link-card" target="_blank">
             <div class="icon-box">📢</div>
-            <div class="link-text">
-                <b>Updates Channel</b>
-                <span>Get the latest ROMs and news</span>
-            </div>
+            <div class="link-text"><b>Updates Channel</b><span>Get the latest announcements</span></div>
         </a>
-
         <a href="https://t.me/bomboclatsweetchat" class="link-card" target="_blank">
             <div class="icon-box">💬</div>
-            <div class="link-text">
-                <b>Global Chat</b>
-                <span>Connect with other users</span>
-            </div>
+            <div class="link-text"><b>Global Chat</b><span>Connect with the community</span></div>
         </a>
 
+        <!-- SECTION 2: DYNAMIC RELEASES -->
+        <div class="section-title">Latest Release & Links</div>
         
-<div class="section-title">Maintainer</div>
-        <a href="https://t.me/sentineprime00" class="link-card developer" target="_blank">
-            <div class="icon-box">
-                <img src="image_1.png" alt="Developer Hazim" class="developer-icon-img">
-            </div>
-            <div class="link-text">
-                <b>Hazım (sentineprime00)</b>
-                <span>Project Maintainer</span>
-            </div>
-        </a>
-
-        
-<div class="section-title">Downloads</div>
-
-        
-<a href="recovery.img" class="link-card download">
+        <!-- File Card -->
+        <a href="javascript:void(0)" id="fb-file-link" class="link-card download-card link-disabled">
             <div class="icon-box">📦</div>
             <div class="link-text">
-                <b>Custom Recovery</b>
-                <span>Latest stable build for sweet</span>
+                <b id="fb-file-name">No File Shared</b>
+                <span id="fb-file-desc">Nothing here yet</span>
             </div>
         </a>
 
-        <a href="module.zip" class="link-card download">
-            <div class="icon-box">🔥</div>
+        <!-- Link Card -->
+        <a href="javascript:void(0)" id="fb-special-link" class="link-card special-card link-disabled" target="_blank">
+            <div class="icon-box">🔗</div>
             <div class="link-text">
-                <b>Magisk Module</b>
-                <span>Optimized system tweaks</span>
+                <b>Quick Link</b>
+                <span id="fb-link-desc">Update expected</span>
             </div>
         </a>
 
-        
-<footer>
-            Server Status: <span class="status">Online</span><br>
-            Hosted on Xiaomi 15T Pro (klimt)<br>
-            Powered by Hazım | Surveying Engineering Student
-        </footer>
+        <!-- SECTION 3: STAFF -->
+        <div class="section-title">Management</div>
+        <a href="https://t.me/bbera0" class="link-card" style="border-left: 4px solid var(--purple-accent);" target="_blank">
+            <div class="icon-box"><img src="image_2.png" class="admin-icon"></div>
+            <div class="link-text"><b>Bera</b><span>Group Administrator</span></div>
+        </a>
+        <a href="https://t.me/sentineprime00" class="link-card" style="border-left: 4px solid var(--purple-accent);" target="_blank">
+            <div class="icon-box"><img src="image_1.png" class="admin-icon"></div>
+            <div class="link-text"><b>Hazim</b><span>Developer / Admin</span></div>
+        </a>
+
+        <!-- FOOTER & HIDDEN ADMIN -->
+        <div id="admin-trigger" onclick="showAdmin()">Admin Login</div>
+        <footer>Bomboclat Hub v3.0 | Powered by Hazim</footer>
     </div>
 
+    <!-- ADMIN PANEL MODAL -->
+    <div id="admin-panel">
+        <h2 style="margin-top:0; color: var(--primary); font-size: 18px; text-align: center;">Bomboclat Panel</h2>
+        <input type="text" id="inp-file-name" class="admin-input" placeholder="File Name (e.g. V1.0 Stable)">
+        <input type="text" id="inp-file-url" class="admin-input" placeholder="File Download URL">
+        <input type="text" id="inp-link-url" class="admin-input" placeholder="Quick Link URL">
+        <button class="admin-btn" onclick="saveToFirebase()">UPDATE HUB</button>
+        <button class="admin-btn" onclick="closeAdmin()" style="background:#333;">CLOSE</button>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLMFKxkKe9oj3xlV0SCkb1ZVG9HnzJlyo",
+            authDomain: "squadhubwebsite.firebaseapp.com",
+            databaseURL: "https://squadhubwebsite-default-rtdb.firebaseio.com",
+            projectId: "squadhubwebsite",
+            storageBucket: "squadhubwebsite.firebasestorage.app",
+            messagingSenderId: "388592976001",
+            appId: "1:388592976001:web:a97adc7dc6cda836204d80"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        db.ref('bomboclatData').on('value', (snap) => {
+            const data = snap.val();
+            
+            const fileLink = document.getElementById('fb-file-link');
+            const fileName = document.getElementById('fb-file-name');
+            const fileDesc = document.getElementById('fb-file-desc');
+            
+            const specialLink = document.getElementById('fb-special-link');
+            const linkDesc = document.getElementById('fb-link-desc');
+
+            if(data) {
+                // --- FILE LOGIC ---
+                if (data.fileUrl && data.fileUrl.trim() !== "" && data.fileUrl !== "#") {
+                    fileName.innerText = data.fileName || "File Shared";
+                    fileDesc.innerText = "Click to Download";
+                    fileLink.href = data.fileUrl;
+                    fileLink.classList.remove('link-disabled');
+                    fileLink.setAttribute("download", "");
+                } else {
+                    fileName.innerText = "No File Shared";
+                    fileDesc.innerText = "Nothing here yet";
+                    fileLink.href = "javascript:void(0)";
+                    fileLink.classList.add('link-disabled');
+                }
+
+                // --- LINK LOGIC ---
+                if (data.linkUrl && data.linkUrl.trim() !== "" && data.linkUrl !== "#") {
+                    linkDesc.innerText = "Redirecting to active mirror";
+                    specialLink.href = data.linkUrl;
+                    specialLink.classList.remove('link-disabled');
+                } else {
+                    linkDesc.innerText = "Update expected";
+                    specialLink.href = "javascript:void(0)";
+                    specialLink.classList.add('link-disabled');
+                }
+                
+                // Fill Admin Inputs
+                document.getElementById('inp-file-name').value = data.fileName || "";
+                document.getElementById('inp-file-url').value = data.fileUrl || "";
+                document.getElementById('inp-link-url').value = data.linkUrl || "";
+            }
+        });
+
+        function showAdmin() { 
+            const pw = prompt("Password:"); 
+            if(pw === "0303") document.getElementById('admin-panel').style.display = 'block'; 
+            else alert("Access Denied!"); 
+        }
+        function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+        
+        function saveToFirebase() {
+            db.ref('bomboclatData').set({
+                fileName: document.getElementById('inp-file-name').value,
+                fileUrl: document.getElementById('inp-file-url').value,
+                linkUrl: document.getElementById('inp-link-url').value
+            }).then(() => { 
+                alert("Hub Updated Successfully!"); 
+                closeAdmin(); 
+            }).catch(e => alert("Error: " + e));
+        }
+    </script>
 </body>
 </html>
